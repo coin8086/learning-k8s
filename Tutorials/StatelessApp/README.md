@@ -1,4 +1,0 @@
-See
-
-* https://kubernetes.io/docs/tutorials/stateless-application/expose-external-ip-address/
-* https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
