@@ -1,3 +1,1 @@
-See
-
-* https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
+See https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
