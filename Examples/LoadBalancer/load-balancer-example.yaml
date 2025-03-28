@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-lb-service
+spec:
+  selector:
+    app: lb-example
+  ports:
+    - port: 8080
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-lb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lb-example
+  template:
+    metadata:
+      labels:
+        app: lb-example
+    spec:
+      containers:
+      - image: gcr.io/google-samples/hello-app:2.0
+        name: hello
+        ports:
+        - containerPort: 8080
