@@ -8,7 +8,7 @@ See
 
 Note
 
-The PVs in pv-local.yaml are all of type local, and thus the local path `/mnt/vol*` must exist on node before a PVC binding and provisioning.
+The PVs in local-pv.yaml are all of type local, and thus the local path `/mnt/vol*` must exist on node before a PVC binding and provisioning.
 
 On a Windows dev machine for a Kind cluster, this can be achieved by PowerShell commands like
 
@@ -19,5 +19,5 @@ $containers | %{ docker exec -it $_ bash -c 'for i in {1..10}; do mkdir -p /mnt/
 
 Note for the commands
 
-* Node `kind-control-plane` is not involved since it's excluded in the pv-local.yaml by PV's `nodeAffinity`.
+* Node `kind-control-plane` is not involved since it's excluded in the local-pv.yaml by PV's `nodeAffinity`.
 * 10 directories (`/mnt/vol1` ... `/mnt/vol10`) are created on each node, so that a PV can be provisioned on any node without confliction.
