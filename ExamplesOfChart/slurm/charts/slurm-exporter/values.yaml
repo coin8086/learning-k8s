@@ -1,0 +1,87 @@
+# SPDX-FileCopyrightText: Copyright (C) SchedMD LLC.
+# SPDX-License-Identifier: Apache-2.0
+
+#
+# -- (string)
+# Overrides the name of the release.
+nameOverride: ""
+
+#
+# -- (string)
+# Overrides the namespace of the release.
+namespaceOverride: ""
+
+#
+# -- (list)
+# Set the secrets for image pull.
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+  # - name: regcred
+
+#
+# -- (string)
+# Set the priority class to use.
+# Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
+#
+# Slurm metrics exporter configurations.
+exporter:
+  #
+  # -- (bool)
+  # Enables metrics collection.
+  enabled: true
+  #
+  #
+  # The name of the secret containing a token to communicate with the Slurm REST API.
+  secretName: ""
+  #
+  # -- (integer)
+  # Set the number of replicas to deploy.
+  replicas: 1
+  #
+  # -- (string)
+  # Set the image pull policy.
+  imagePullPolicy: IfNotPresent
+  #
+  # Set the image to use.
+  image:
+    #
+    # -- (string)
+    # Set the image repository to use.
+    repository: ghcr.io/slinkyproject/slurm-exporter
+    #
+    # -- (string)
+    # Set the image tag to use.
+    # @default -- The Release version.
+    tag: ""
+  #
+  # -- (string)
+  # Set the priority class to use.
+  # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
+  priorityClassName: ""
+  #
+  # -- (object)
+  # Set affinity for Kubernetes Pod scheduling.
+  # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+  #
+  # -- (object)
+  # Set container resource requests and limits for Kubernetes Pod scheduling.
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container
+  resources: {}
+  serviceMonitor:
+    enabled: true
+    endpoints:
+      - port: metrics
+        path: /metrics
+        scheme: http
+        interval: 10s
+
+#
+# Slurm grafana dashboard configuration.
+grafana:
+  #
+  # -- (bool)
+  # Enables grafana dashboard.
+  enabled: true

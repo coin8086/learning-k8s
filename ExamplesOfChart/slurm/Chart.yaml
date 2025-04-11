@@ -1,0 +1,18 @@
+annotations:
+  category: HPC
+  licenses: Apache-2.0
+apiVersion: v2
+appVersion: "24.11"
+dependencies:
+- condition: mariadb.enabled
+  name: mariadb
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: ~16.3
+- condition: slurm-exporter.enabled
+  name: slurm-exporter
+  repository: oci://ghcr.io/slinkyproject/charts
+  version: ~0.2.0
+description: Helm Chart for Slurm HPC Workload Manager
+name: slurm
+type: application
+version: 0.2.0
