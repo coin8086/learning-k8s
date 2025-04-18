@@ -54,8 +54,8 @@ operator:
     #
     # -- (string)
     # Sets the image tag to use.
-    # @default -- The Release version.
-    tag: 0.2.0
+    # @default -- The chart Version.
+    tag: ""
   #
   # Service account configurations.
   serviceAccount:
@@ -121,8 +121,8 @@ webhook:
     #
     # -- (string)
     # Sets the image tag to use.
-    # @default -- The Release version.
-    tag: 0.2.0
+    # @default -- The chart Version.
+    tag: ""
   #
   # Service account configurations.
   serviceAccount:
