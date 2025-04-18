@@ -1,4 +1,4 @@
-﻿using k8s;
+using k8s;
 using k8s.Models;
 
 namespace GenericClient;
@@ -7,23 +7,38 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        var config = KubernetesClientConfiguration.BuildDefaultConfig();
-        var client = new Kubernetes(config);
-        var genericPods = new k8s.GenericClient(client, "", "v1", "pods");
-        var pods = await genericPods.ListNamespacedAsync<V1PodList>("default");
-
-        Console.WriteLine("Pods in default namespace:");
-        foreach (var pod in pods.Items)
+        var watch = false;
+        if (args.Length > 0 && args[0] == "-w")
         {
-            Console.WriteLine(pod.Metadata.Name);
+            watch = true;
         }
 
-        var genericNodes = new k8s.GenericClient(client, "", "v1", "nodes");
-        var nodes = await genericNodes.ListAsync<V1NodeList>();
-        Console.WriteLine("\nCluster nodes:");
-        foreach (var node in nodes.Items)
+        var config = KubernetesClientConfiguration.BuildDefaultConfig();
+        var client = new Kubernetes(config);
+        using var genericPods = new k8s.GenericClient(client, "", "v1", "pods");
+
+        if (watch)
         {
-            Console.WriteLine(node.Metadata.Name);
+            var pods = genericPods.WatchNamespacedAsync<V1Pod>("default");
+
+            Console.WriteLine("Pods in default namespace:");
+
+            await foreach (var (evt, pod) in pods)
+            {
+                Console.WriteLine(evt);
+                Console.WriteLine(pod.Metadata.Name);
+            }
+        }
+        else
+        {
+            var pods = await genericPods.ListNamespacedAsync<V1PodList>("default");
+
+            Console.WriteLine("Pods in default namespace:");
+
+            foreach (var pod in pods.Items)
+            {
+                Console.WriteLine(pod.Metadata.Name);
+            }
         }
     }
 }
