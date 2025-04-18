@@ -1,6 +1,6 @@
 using k8s;
 
-namespace PodList;
+namespace ListResources;
 
 class Program
 {

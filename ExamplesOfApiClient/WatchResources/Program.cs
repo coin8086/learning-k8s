@@ -1,7 +1,7 @@
-﻿using k8s.Models;
+using k8s.Models;
 using k8s;
 
-namespace Watch;
+namespace WatchResources;
 
 class Program
 {
