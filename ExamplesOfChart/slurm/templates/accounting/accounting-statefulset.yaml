@@ -64,6 +64,9 @@ spec:
                   name: {{ include "mariadb.secretName" . }}
                   key: mariadb-password
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |

@@ -51,6 +51,9 @@ spec:
             - name: SLURM_USER
               value: {{ include "slurm.user" . }}
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |
@@ -77,6 +80,10 @@ spec:
             - name: SLURMRESTD_SECURITY
               value: disable_unshare_files,disable_unshare_sysv
           args:
+            {{- if not .Values.accounting.enabled }}
+            - -s
+            - openapi/slurmctld
+            {{- end }}
             - "0.0.0.0:{{- include "slurm.restapi.port" . }}"
           ports:
             - name: slurmrestd

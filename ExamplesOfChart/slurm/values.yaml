@@ -87,7 +87,7 @@ slurm:
     HashPlugin=hash/k12
     #
     ### ARCHIVE ###
-    ArchiveDir=/dev/null
+    ArchiveDir=/tmp
     #ArchiveEvents=YES
     #ArchiveJobs=YES
     #ArchiveResvs=YES
@@ -568,14 +568,66 @@ mariadb:
     username: slurm
     database: slurm_acct_db
     existingSecret: "slurm-mariadb-passwords"
-  initdbScripts:
-    # NOTE: https://slurm.schedmd.com/accounting.html#slurm-accounting-configuration-before-build
-    slurm-accounting.sql: |-
-      SET GLOBAL innodb_buffer_pool_size=(4 * 1024 * 1024 * 1024);
-      SET GLOBAL innodb_log_file_size=(64 * 1024 * 1024);
-      SET GLOBAL innodb_lock_wait_timeout=900;
-      SET GLOBAL max_allowed_packet=(16 * 1024 * 1024);
+  tls:
+    enabled: false
+  tde:
+    enabled: false
   primary:
+    # NOTE: https://slurm.schedmd.com/accounting.html#slurm-accounting-configuration-before-build
+    configuration: |-
+      [mysqld]
+      skip-name-resolve
+      explicit_defaults_for_timestamp
+      basedir=/opt/bitnami/mariadb
+      datadir=/bitnami/mariadb/data
+      plugin_dir=/opt/bitnami/mariadb/plugin
+      port={{ .Values.primary.containerPorts.mysql }}
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      tmpdir=/opt/bitnami/mariadb/tmp
+      innodb_buffer_pool_size=4096M
+      innodb_lock_wait_timeout=900
+      innodb_log_file_size=1024M
+      max_allowed_packet=16M
+      bind-address=*
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+      log-error=/opt/bitnami/mariadb/logs/mysqld.log
+      character-set-server=UTF8
+      collation-server=utf8_general_ci
+      slow_query_log=0
+      long_query_time=10.0
+      binlog_expire_logs_seconds=2592000
+      {{- if .Values.tls.enabled }}
+      ssl_cert=/opt/bitnami/mariadb/certs/{{ .Values.tls.certFilename }}
+      ssl_key=/opt/bitnami/mariadb/certs/{{ .Values.tls.certKeyFilename }}
+      {{- if (include "mariadb.tlsCACert" .) }}
+      ssl_ca={{ include "mariadb.tlsCACert" . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tde.enabled }}
+      plugin_load_add=file_key_management
+      file_key_management_filename=/opt/bitnami/mariadb/tde/{{ .Values.tde.encryptedKeyFilename }}
+      file_key_management_filekey=FILE:/opt/bitnami/mariadb/tde/{{ .Values.tde.randomKeyFilename }}
+      file_key_management_encryption_algorithm={{ .Values.tde.fileKeyManagementEncryptionAlgorithm }}
+      innodb_encrypt_tables={{ .Values.tde.innodbEncryptTables }}
+      innodb_encrypt_log={{ .Values.tde.innodbEncryptLog }}
+      innodb_encrypt_temporary_tables={{ .Values.tde.innodbEncryptTemporaryTables }}
+      innodb_encryption_threads={{ .Values.tde.innodbEncryptionThreads }}
+      encrypt_tmp_disk_tables={{ .Values.tde.encryptTmpDiskTables }}
+      encrypt_tmp_files={{ .Values.tde.encryptTmpTiles }}
+      encrypt_binlog={{ .Values.tde.encryptBINLOG }}
+      aria_encrypt_tables={{ .Values.tde.ariaEncryptTables }}
+      {{- end }}
+
+      [client]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      default-character-set=UTF8
+      plugin_dir=/opt/bitnami/mariadb/plugin
+
+      [manager]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
     persistence:
       enabled: true
       existingClaim: ""

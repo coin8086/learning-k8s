@@ -88,7 +88,7 @@ Determine exporter image repository
 Define exporter image tag
 */}}
 {{- define "image.tag" -}}
-{{- .Chart.AppVersion -}}
+{{- .Chart.Version -}}
 {{- end }}
 
 {{/*

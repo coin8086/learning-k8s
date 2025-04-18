@@ -42,9 +42,9 @@ data:
     #
     ### LOGGING ###
     LogFile=/proc/1/fd/1
-    {{- with .Values.slurm.slurmdbdConfig }}
+    {{- with .Values.slurm.extraSlurmdbdConf }}
     #
     ### EXTRA CONFIG ###
     {{- . | nindent 4 -}}
-    {{- end }}{{- /* with .Values.slurm.slurmdbdConfig */}}
+    {{- end }}{{- /* with .Values.slurm.extraSlurmdbdConf */}}
 {{- end }}

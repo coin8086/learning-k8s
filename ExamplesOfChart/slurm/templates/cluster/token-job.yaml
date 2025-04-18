@@ -38,6 +38,9 @@ spec:
             - name: SLURM_USER
               value: {{ include "slurm.user" . }}
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |
@@ -48,7 +51,11 @@ spec:
             {{- include "slurm.init.volumeMounts" . | nindent 12 }}
         - name: sackd
           image: {{ include "slurm.authcred.imageRef" . }}
-          imagePullPolicy: {{ include "slurm.imagePullPolicy" . }}
+          imagePullPolicy: {{ .Values.authcred.imagePullPolicy | default (include "slurm.imagePullPolicy" .) }}
+          {{- if .Values.authcred.resources }}
+          resources:
+            {{- .Values.authcred.resources | toYaml | nindent 12 }}
+          {{- end }}{{- /* if .Values.authcred.resources */}}
           restartPolicy: Always
           securityContext:
             {{- include "slurm.securityContext" . | nindent 12 }}
@@ -67,6 +74,8 @@ spec:
           resources:
             {{- .Values.authcred.resources | toYaml | nindent 12 }}
           {{- end }}{{- /* if .Values.authcred.resources */}}
+          securityContext:
+            {{- include "slurm.securityContext" . | nindent 12 }}
           env:
             - name: SLURM_USER
               value: {{ include "slurm.user" . }}
@@ -75,6 +84,9 @@ spec:
             - name: TOKEN_SECRET
               value: {{ include "slurm.cluster.secretName" . }}
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |
@@ -93,6 +105,8 @@ spec:
           resources:
             {{- .Values.authcred.resources | toYaml | nindent 12 }}
           {{- end }}{{- /* if .Values.authcred.resources */}}
+          securityContext:
+            {{- include "slurm.securityContext" . | nindent 12 }}
           env:
             - name: SLURM_USER
               value: {{ include "exporter.user" . }}
@@ -101,6 +115,9 @@ spec:
             - name: TOKEN_SECRET
               value: {{ index .Values "slurm-exporter" "exporter" "secretName" }}
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |

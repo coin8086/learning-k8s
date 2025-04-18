@@ -11,8 +11,8 @@ dependencies:
 - condition: slurm-exporter.enabled
   name: slurm-exporter
   repository: oci://ghcr.io/slinkyproject/charts
-  version: ~0.2.0
+  version: ~0.2.1
 description: Helm Chart for Slurm HPC Workload Manager
 name: slurm
 type: application
-version: 0.2.0
+version: 0.2.1

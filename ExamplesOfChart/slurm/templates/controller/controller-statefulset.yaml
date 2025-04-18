@@ -58,6 +58,9 @@ spec:
             - name: SLURM_USER
               value: {{ include "slurm.user" . }}
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |
@@ -134,6 +137,9 @@ spec:
             - name: SLURM_USER
               value: {{ include "slurm.user" . }}
           command:
+            - tini
+            - -g
+            - --
             - bash
             - -c
             - |

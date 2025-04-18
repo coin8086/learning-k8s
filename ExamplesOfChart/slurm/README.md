@@ -1,6 +1,6 @@
 # slurm
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 24.11](https://img.shields.io/badge/AppVersion-24.11-informational?style=flat-square)
+![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 24.11](https://img.shields.io/badge/AppVersion-24.11-informational?style=flat-square)
 
 Helm Chart for Slurm HPC Workload Manager
 
@@ -8,7 +8,7 @@ Helm Chart for Slurm HPC Workload Manager
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://ghcr.io/slinkyproject/charts | slurm-exporter | ~0.2.0 |
+| oci://ghcr.io/slinkyproject/charts | slurm-exporter | ~0.2.1 |
 | oci://registry-1.docker.io/bitnamicharts | mariadb | ~16.3 |
 
 ## Values
@@ -86,9 +86,9 @@ Helm Chart for Slurm HPC Workload Manager
 | mariadb.auth.existingSecret | string | `"slurm-mariadb-passwords"` |  |
 | mariadb.auth.username | string | `"slurm"` |  |
 | mariadb.enabled | bool | `true` |  |
-| mariadb.initdbScripts."slurm-accounting.sql" | string | `"SET GLOBAL innodb_buffer_pool_size=(4 * 1024 * 1024 * 1024);\nSET GLOBAL innodb_log_file_size=(64 * 1024 * 1024);\nSET GLOBAL innodb_lock_wait_timeout=900;\nSET GLOBAL max_allowed_packet=(16 * 1024 * 1024);"` |  |
 | mariadb.metrics.enabled | bool | `false` |  |
 | mariadb.metrics.serviceMonitor.enabled | bool | `false` |  |
+| mariadb.primary.configuration | string | `"[mysqld]\nskip-name-resolve\nexplicit_defaults_for_timestamp\nbasedir=/opt/bitnami/mariadb\ndatadir=/bitnami/mariadb/data\nplugin_dir=/opt/bitnami/mariadb/plugin\nport={{ .Values.primary.containerPorts.mysql }}\nsocket=/opt/bitnami/mariadb/tmp/mysql.sock\ntmpdir=/opt/bitnami/mariadb/tmp\ninnodb_buffer_pool_size=4096M\ninnodb_lock_wait_timeout=900\ninnodb_log_file_size=1024M\nmax_allowed_packet=16M\nbind-address=*\npid-file=/opt/bitnami/mariadb/tmp/mysqld.pid\nlog-error=/opt/bitnami/mariadb/logs/mysqld.log\ncharacter-set-server=UTF8\ncollation-server=utf8_general_ci\nslow_query_log=0\nlong_query_time=10.0\nbinlog_expire_logs_seconds=2592000\n{{- if .Values.tls.enabled }}\nssl_cert=/opt/bitnami/mariadb/certs/{{ .Values.tls.certFilename }}\nssl_key=/opt/bitnami/mariadb/certs/{{ .Values.tls.certKeyFilename }}\n{{- if (include \"mariadb.tlsCACert\" .) }}\nssl_ca={{ include \"mariadb.tlsCACert\" . }}\n{{- end }}\n{{- end }}\n{{- if .Values.tde.enabled }}\nplugin_load_add=file_key_management\nfile_key_management_filename=/opt/bitnami/mariadb/tde/{{ .Values.tde.encryptedKeyFilename }}\nfile_key_management_filekey=FILE:/opt/bitnami/mariadb/tde/{{ .Values.tde.randomKeyFilename }}\nfile_key_management_encryption_algorithm={{ .Values.tde.fileKeyManagementEncryptionAlgorithm }}\ninnodb_encrypt_tables={{ .Values.tde.innodbEncryptTables }}\ninnodb_encrypt_log={{ .Values.tde.innodbEncryptLog }}\ninnodb_encrypt_temporary_tables={{ .Values.tde.innodbEncryptTemporaryTables }}\ninnodb_encryption_threads={{ .Values.tde.innodbEncryptionThreads }}\nencrypt_tmp_disk_tables={{ .Values.tde.encryptTmpDiskTables }}\nencrypt_tmp_files={{ .Values.tde.encryptTmpTiles }}\nencrypt_binlog={{ .Values.tde.encryptBINLOG }}\naria_encrypt_tables={{ .Values.tde.ariaEncryptTables }}\n{{- end }}\n\n[client]\nport=3306\nsocket=/opt/bitnami/mariadb/tmp/mysql.sock\ndefault-character-set=UTF8\nplugin_dir=/opt/bitnami/mariadb/plugin\n\n[manager]\nport=3306\nsocket=/opt/bitnami/mariadb/tmp/mysql.sock\npid-file=/opt/bitnami/mariadb/tmp/mysqld.pid"` |  |
 | mariadb.primary.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | mariadb.primary.persistence.annotations | object | `{}` |  |
 | mariadb.primary.persistence.enabled | bool | `true` |  |
@@ -99,6 +99,8 @@ Helm Chart for Slurm HPC Workload Manager
 | mariadb.primary.persistence.storageClass | string | `"standard"` |  |
 | mariadb.primary.priorityClassName | string | `""` |  |
 | mariadb.resources | object | `{}` |  |
+| mariadb.tde.enabled | bool | `false` |  |
+| mariadb.tls.enabled | bool | `false` |  |
 | nameOverride | string | `""` |  Overrides the name of the release. |
 | namespaceOverride | string | `""` |  Overrides the namespace of the release. |
 | priorityClassName | string | `""` |  Set the priority class to use. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass |
@@ -117,6 +119,6 @@ Helm Chart for Slurm HPC Workload Manager
 | slurm.configFiles | map[string]string | `{}` |  Optional raw Slurm configuration files, as a map. The map key represents the config file by name; the map value represents config file contents as a string. Ref: https://slurm.schedmd.com/man_index.html#configuration_files |
 | slurm.epilogScripts | map[string]string | `{}` |  The Epilog scripts for compute nodesets, as a map. The map key represents the filename; the map value represents the script contents. WARNING: The script must include a shebang (!) so it can be executed correctly by Slurm. Ref: https://slurm.schedmd.com/slurm.conf.html#OPT_Epilog Ref: https://slurm.schedmd.com/prolog_epilog.html Ref: https://en.wikipedia.org/wiki/Shebang_(Unix) |
 | slurm.extraSlurmConf | string | `"MaxNodeCount=1024\nReturnToService=2\nEnforcePartLimits=NO\n#\n### PLUGINS & PARAMETERS ###\nSchedulerType=sched/backfill\nSchedulerParameters=defer_batch\nSelectType=select/cons_tres\nSelectTypeParameters=CR_Core_Memory\nSlurmctldParameters=enable_configless,enable_stepmgr\nSlurmdParameters=contain_spank\nCommunicationParameters=block_null_hash\nLaunchParameters=enable_nss_slurm,use_interactive_step,ulimit_pam_adopt\n#ReconfigFlags=KeepPartInfo,KeepPartState\nPrologFlags=Contain\nHashPlugin=hash/k12\n#\n### LOGGING ###\nSlurmctldDebug=info\nSlurmSchedLogLevel=1\nSlurmdDebug=info\n#DebugFlags=\nLogTimeFormat=iso8601_ms"` |  Extra slurm configuration lines to append to `slurm.conf`. WARNING: Values can override existing ones. Ref: https://slurm.schedmd.com/slurm.conf.html |
-| slurm.extraSlurmdbdConf | string | `"CommitDelay=1\n#\n### LOGGING ###\nDebugLevel=info\n#DebugFlags=\nLogTimeFormat=iso8601_ms\n#\n# PLUGINS & PARAMETERS\n#CommunicationParameters=\nHashPlugin=hash/k12\n#\n### ARCHIVE ###\nArchiveDir=/dev/null\n#ArchiveEvents=YES\n#ArchiveJobs=YES\n#ArchiveResvs=YES\n#ArchiveSteps=NO\n#ArchiveSuspend=NO\n#ArchiveTXN=NO\n#ArchiveUsage=NO\n#\n### PURGE ###\n#PurgeEventAfter=12month\n#PurgeJobAfter=12month\n#PurgeResvAfter=2month\n#PurgeStepAfter=2month\n#PurgeSuspendAfter=1month\n#PurgeTXNAfter=12month\n#PurgeUsageAfter=12month"` |  Extra slurmdbd configuration lines to append to `slurmdbd.conf`. WARNING: Values can override existing ones. Ref: https://slurm.schedmd.com/slurmdbd.conf.html |
+| slurm.extraSlurmdbdConf | string | `"CommitDelay=1\n#\n### LOGGING ###\nDebugLevel=info\n#DebugFlags=\nLogTimeFormat=iso8601_ms\n#\n# PLUGINS & PARAMETERS\n#CommunicationParameters=\nHashPlugin=hash/k12\n#\n### ARCHIVE ###\nArchiveDir=/tmp\n#ArchiveEvents=YES\n#ArchiveJobs=YES\n#ArchiveResvs=YES\n#ArchiveSteps=NO\n#ArchiveSuspend=NO\n#ArchiveTXN=NO\n#ArchiveUsage=NO\n#\n### PURGE ###\n#PurgeEventAfter=12month\n#PurgeJobAfter=12month\n#PurgeResvAfter=2month\n#PurgeStepAfter=2month\n#PurgeSuspendAfter=1month\n#PurgeTXNAfter=12month\n#PurgeUsageAfter=12month"` |  Extra slurmdbd configuration lines to append to `slurmdbd.conf`. WARNING: Values can override existing ones. Ref: https://slurm.schedmd.com/slurmdbd.conf.html |
 | slurm.prologScripts | map[string]string | `{}` |  The Prolog scripts for compute nodesets, as a map. The map key represents the filename; the map value represents the script contents. WARNING: The script must include a shebang (!) so it can be executed correctly by Slurm. Ref: https://slurm.schedmd.com/slurm.conf.html#OPT_Prolog Ref: https://slurm.schedmd.com/prolog_epilog.html Ref: https://en.wikipedia.org/wiki/Shebang_(Unix) |
 

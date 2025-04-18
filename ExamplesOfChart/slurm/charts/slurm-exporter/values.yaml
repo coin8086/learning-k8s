@@ -53,7 +53,7 @@ exporter:
     #
     # -- (string)
     # Set the image tag to use.
-    # @default -- The Release version.
+    # @default -- The chart Version.
     tag: ""
   #
   # -- (string)
