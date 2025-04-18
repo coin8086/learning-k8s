@@ -1,0 +1,15 @@
+apiVersion: my.domain/v1alpha1
+kind: Example
+metadata:
+  name: example1
+spec:
+  property1: abc
+  property2: 100
+---
+apiVersion: my.domain/v1alpha1
+kind: Example
+metadata:
+  name: example2
+spec:
+  property1: abc
+  property2: 100
