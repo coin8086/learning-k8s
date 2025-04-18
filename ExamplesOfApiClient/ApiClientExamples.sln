@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch", "Watch\Watch.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericClient", "GenericClient\GenericClient.csproj", "{BA440467-6322-407F-B0C7-BC0E090EDCF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleController", "ExampleController\ExampleController.csproj", "{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{BA440467-6322-407F-B0C7-BC0E090EDCF5}.Release|x64.Build.0 = Release|Any CPU
 		{BA440467-6322-407F-B0C7-BC0E090EDCF5}.Release|x86.ActiveCfg = Release|Any CPU
 		{BA440467-6322-407F-B0C7-BC0E090EDCF5}.Release|x86.Build.0 = Release|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Debug|x64.Build.0 = Debug|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Release|x64.ActiveCfg = Release|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Release|x64.Build.0 = Release|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0401E98-F899-4DF3-BFDC-A74DBAB4DB2D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

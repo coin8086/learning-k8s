@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-ExampleController-510256c8-9f26-479c-afe2-4045b173a437</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KubernetesClient" Version="16.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
+  </ItemGroup>
+</Project>
