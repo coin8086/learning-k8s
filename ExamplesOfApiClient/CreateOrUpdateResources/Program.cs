@@ -1,7 +1,8 @@
 using k8s;
 using k8s.Models;
+using System.Net;
 
-namespace CreateResources;
+namespace CreateOrUpdateResources;
 
 class Program
 {
@@ -71,8 +72,20 @@ class Program
             };
         }
 
-        Console.WriteLine("Creating deployment...");
-        var result = await deployments.CreateNamespacedAsync<V1Deployment>(deployment, "default");
-        Console.WriteLine($"Status: {result.Status.ToString()}");
+        try
+        {
+            Console.WriteLine("Creating deployment...");
+            await deployments.CreateNamespacedAsync<V1Deployment>(deployment, "default");
+        }
+        catch (k8s.Autorest.HttpOperationException ex)
+        {
+            if (ex.Response.StatusCode == HttpStatusCode.Conflict && ex.Message.Contains("\"AlreadyExists\""))
+            {
+                Console.WriteLine("Patching deployment...");
+                var patch = new V1Patch(deployment, V1Patch.PatchType.StrategicMergePatch);
+                await deployments.PatchNamespacedAsync<V1Deployment>(patch, "default", deployment.Metadata.Name);
+            }
+        }
+        Console.WriteLine("OK");
     }
 }
