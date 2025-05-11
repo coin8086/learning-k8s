@@ -72,20 +72,27 @@ class Program
             };
         }
 
+        var ns = "default";
+        V1Deployment? result = null;
+
         try
         {
-            Console.WriteLine("Creating deployment...");
-            await deployments.CreateNamespacedAsync<V1Deployment>(deployment, "default");
+            result = await deployments.ReadNamespacedAsync<V1Deployment>(ns, deployment.Metadata.Name);
         }
-        catch (k8s.Autorest.HttpOperationException ex)
+        catch (k8s.Autorest.HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound) { }
+
+        if (result == null)
         {
-            if (ex.Response.StatusCode == HttpStatusCode.Conflict && ex.Message.Contains("\"AlreadyExists\""))
-            {
-                Console.WriteLine("Patching deployment...");
-                var patch = new V1Patch(deployment, V1Patch.PatchType.StrategicMergePatch);
-                await deployments.PatchNamespacedAsync<V1Deployment>(patch, "default", deployment.Metadata.Name);
-            }
+            Console.WriteLine("Creating deployment...");
+            await deployments.CreateNamespacedAsync<V1Deployment>(deployment, ns);
         }
+        else
+        {
+            Console.WriteLine("Updating deployment...");
+            var patch = new V1Patch(deployment, V1Patch.PatchType.StrategicMergePatch);
+            await deployments.PatchNamespacedAsync<V1Deployment>(patch, ns, deployment.Metadata.Name);
+        }
+
         Console.WriteLine("OK");
     }
 }
