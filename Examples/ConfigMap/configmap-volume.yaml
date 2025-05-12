@@ -18,21 +18,21 @@ metadata:
   name: test-pod
 spec:
   containers:
-    - name: test-container
-      image: registry.k8s.io/busybox:1.27.2
-      command: [ "/bin/sh", "-c", "cd /etc/config && ls -l && for f in *; do echo $f && cat $f; done" ]
-      volumeMounts:
-      - name: config-volume
-        mountPath: /etc/config
-  volumes:
+  - name: test-container
+    image: registry.k8s.io/busybox:1.27.2
+    command: [ "/bin/sh", "-c", "cd /etc/config && ls -l && for f in *; do echo $f && cat $f; done" ]
+    volumeMounts:
     - name: config-volume
-      configMap:
-        # A key-value pair will be mapped to a file in the volume. The file name is the key
-        # and the file content is the value.
-        name: test-config
-        items:
-        - key: key1
-          path: keyfile1
-        - key: key2
-          path: keyfile2
+      mountPath: /etc/config
+  volumes:
+  - name: config-volume
+    configMap:
+      # A key-value pair will be mapped to a file in the volume. The file name is the key
+      # and the file content is the value.
+      name: test-config
+      items:
+      - key: key1
+        path: keyfile1
+      - key: key2
+        path: keyfile2
   restartPolicy: Never

@@ -17,19 +17,19 @@ metadata:
   name: test-pod
 spec:
   containers:
-    - name: test-container
-      image: registry.k8s.io/busybox:1.27.2
-      command: [ "/bin/sh", "-c", "env" ]
-      # NOTE that each env var can be from a different ConfigMap than others.
-      env:
-        - name: ENV_KEY1
-          valueFrom:
-            configMapKeyRef:
-              name: test-config
-              key: key1
-        - name: ENV_KEY2
-          valueFrom:
-            configMapKeyRef:
-              name: test-config
-              key: key2
+  - name: test-container
+    image: registry.k8s.io/busybox:1.27.2
+    command: [ "/bin/sh", "-c", "env" ]
+    # NOTE that each env var can be from a different ConfigMap than others.
+    env:
+    - name: ENV_KEY1
+      valueFrom:
+        configMapKeyRef:
+          name: test-config
+          key: key1
+    - name: ENV_KEY2
+      valueFrom:
+        configMapKeyRef:
+          name: test-config
+          key: key2
   restartPolicy: Never
