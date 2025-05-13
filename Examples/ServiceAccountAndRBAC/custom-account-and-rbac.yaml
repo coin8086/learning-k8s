@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-app-account
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: default
+rules:
+- apiGroups: [""] # "" means the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+subjects:
+- kind: ServiceAccount
+  name: my-app-account
+  namespace: default
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: podlist2
+  labels:
+    name: podlist2
+spec:
+  serviceAccountName: my-app-account
+  containers:
+  - name: podlist2
+    image: louirobert/k8s-example-pod-reader
+  restartPolicy: Never
