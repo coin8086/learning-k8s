@@ -14,8 +14,8 @@ class Program
         }
 
         var config = KubernetesClientConfiguration.BuildDefaultConfig();
-        var client = new Kubernetes(config);
-        using var genericPods = new k8s.GenericClient(client, "", "v1", "pods");
+        using var client = new Kubernetes(config);
+        using var genericPods = new k8s.GenericClient(client, "", "v1", "pods", false);
 
         if (watch)
         {

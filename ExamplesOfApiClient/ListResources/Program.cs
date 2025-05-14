@@ -7,7 +7,7 @@ class Program
     static void Main(string[] args)
     {
         var config = KubernetesClientConfiguration.BuildDefaultConfig();
-        var client = new Kubernetes(config);
+        using var client = new Kubernetes(config);
 
         Console.WriteLine("Starting Request!");
 

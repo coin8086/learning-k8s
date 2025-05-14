@@ -15,8 +15,8 @@ class Program
         }
 
         var config = KubernetesClientConfiguration.BuildDefaultConfig();
-        var client = new Kubernetes(config);
-        using var deployments = new k8s.GenericClient(client, "apps", "v1", "deployments");
+        using var client = new Kubernetes(config);
+        using var deployments = new k8s.GenericClient(client, "apps", "v1", "deployments", false);
 
         V1Deployment deployment;
         if (fromYaml)
