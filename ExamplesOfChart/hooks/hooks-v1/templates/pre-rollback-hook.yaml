@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-rollback-hook-{{ .Release.Name }}-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: pre-rollback
+    helm.sh/resource-policy: keep
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: pre-rollback-hook-{{ .Release.Name }}-{{ .Release.Revision }}
+        image: busybox:1.37.0
+        command: ["echo", "Running pre-rollback hook."]

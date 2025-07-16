@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-install-hook-{{ .Release.Name }}-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/resource-policy: keep
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: post-install-hook-{{ .Release.Name }}-{{ .Release.Revision }}
+        image: busybox:1.37.0
+        command: ["echo", "Running post-install hook."]
