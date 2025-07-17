@@ -1,0 +1,4 @@
+key:
+  {{- include "doodle.array" . | indent 2 }}
+name: my name is {{ include "name" . }}.
+xyz: abc
