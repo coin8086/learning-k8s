@@ -87,3 +87,28 @@ See more on TLS at
 
 * https://kubernetes.github.io/ingress-nginx/user-guide/tls/
 * https://kubernetes.github.io/ingress-nginx/examples/tls-termination/
+
+## Basic Authentication Example
+
+Create a name space and apply [bacic-auth.yaml](./basic-auth.yaml) in it
+
+```ps1
+kubectl create namespace basic-auth
+kubectl apply -f .\basic-auth.yaml -n basic-auth
+```
+
+Then try
+
+```ps1
+curl --resolve test.local:8082:127.0.0.1 https://test.local:8082 -kv -u foo:bar
+```
+
+and
+
+```ps1
+curl --resolve test.local:8082:127.0.0.1 https://test.local:8082 -kv
+```
+
+> Note TLS is optional for this example (That is, the `spec.tls` of the Ingress resource is optional). But in production, TLS is required for HTTP Basic Authentication.
+
+See more on Basic Authentication at https://kubernetes.github.io/ingress-nginx/examples/auth/basic/.

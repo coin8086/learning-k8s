@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-content-1
+data:
+  index.html: |
+    <h1>This is Service 1.<h1>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: service-1
+  template:
+    metadata:
+      labels:
+        app: service-1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.27-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: index
+        configMap:
+          name: service-content-1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-1
+spec:
+  selector:
+    app: service-1
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tls-secret
+type: kubernetes.io/tls
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURURENDQWpTZ0F3SUJBZ0lVSW5pUG0xWngxMU9TSVltc0dYbGViYnVqeFJjd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0tqRVRNQkVHQTFVRUF3d0tkR1Z6ZEM1c2IyTmhiREVUTUJFR0ExVUVDZ3dLZEdWemRDNXNiMk5oYkRBZQpGdzB5TlRFeE1URXdOekUyTVRkYUZ3MHlOakV4TVRFd056RTJNVGRhTUNveEV6QVJCZ05WQkFNTUNuUmxjM1F1CmJHOWpZV3d4RXpBUkJnTlZCQW9NQ25SbGMzUXViRzlqWVd3d2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUIKRHdBd2dnRUtBb0lCQVFDZC9xSnYvT1dkQ1hUSXY5MVhYaTFiZmZnUWozY0FIWkVyTEplR1JRNDNRVEhmOE5iNQpkN0FRY2pUYWswVnVlSGkxOFUzVWFjcDdTMGFXTzhhK1AzeVZreTliUldPenJkRTEzV2RBM3QzaC9FRkdnY203Cmt3MTNOY09qR09ac3JGUGsyRzhtYW1YaXFkelhhVHRTQmJuYlVHcTVLOUlNQlFkVU42dC9UMzZWUnBzRnZLTUEKL1dMRGNoSDNiYW94UWxia2p6d2ZCWGFZdUQ3cmg3M2NrQW1XTkRrYUZDTGZhQS9DMXpwNFJpVWhzRWVlK3JNMgpKNjMwNkZCcEhkSVg1b1FEVzVSQVZDUDRJb2wrWmg3OE03RFpLZlZjMGRib2lQL3pXNHgyMHpWa1BVY05MWWd3CjI4cytSTVZ5cjNqajhFcUJkVklIclkzTzk3UDlmYTBTNUk3MUFnTUJBQUdqYWpCb01CMEdBMVVkRGdRV0JCVEMKNmh5RXM2M1FybXhBQ0tUL3hvaXdKb05rQ3pBZkJnTlZIU01FR0RBV2dCVEM2aHlFczYzUXJteEFDS1QveG9pdwpKb05rQ3pBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUJVR0ExVWRFUVFPTUF5Q0NuUmxjM1F1Ykc5allXd3dEUVlKCktvWklodmNOQVFFTEJRQURnZ0VCQUVqSlJqNExaNmZmR0VvcU5zdnduQlZTc2ZBcEhzQXhBbmM0MEZpK21mTE4KcXNZbzhlczZWSnVZdkVLWDIzdmlCSy9GdC9BYVB6aUpDRTVicExqSTB3bk9BaGFhOXpFODdhZEZVV3VraUlNWQpTdDkvaDRKd29MajExWjlZRExKdXR2NCtuTHVWV1ZpRjN5T3kvVXE0Nnh5cHZyRjZSMWNZNjd5QnFQQ1BhalV5CjQ2Q0x3VENDWWZqR1U1SVdyV3daN2p1MThUcEtvcTVKdWttdTFzazF0UFJIYTJNaGxMZnZ4U1BmTTdiRGd0NW4KTjJ0WStTV041NWJ1TGJ3Zmd3QnVORXEvWFpDb0VLSHk5YzlYTEZhQjBCR014ckhaUEcwQjcycjg0bjJIaURZOQpmNWFrK1ZVQlRaaUc2RkpmVjdoaG1MM05nY0NhTXNTWEl3N29NS3kxMTNFPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRQ2QvcUp2L09XZENYVEkKdjkxWFhpMWJmZmdRajNjQUhaRXJMSmVHUlE0M1FUSGY4TmI1ZDdBUWNqVGFrMFZ1ZUhpMThVM1VhY3A3UzBhVwpPOGErUDN5Vmt5OWJSV096cmRFMTNXZEEzdDNoL0VGR2djbTdrdzEzTmNPakdPWnNyRlBrMkc4bWFtWGlxZHpYCmFUdFNCYm5iVUdxNUs5SU1CUWRVTjZ0L1QzNlZScHNGdktNQS9XTERjaEgzYmFveFFsYmtqendmQlhhWXVEN3IKaDczY2tBbVdORGthRkNMZmFBL0MxenA0UmlVaHNFZWUrck0ySjYzMDZGQnBIZElYNW9RRFc1UkFWQ1A0SW9sKwpaaDc4TTdEWktmVmMwZGJvaVAvelc0eDIwelZrUFVjTkxZZ3cyOHMrUk1WeXIzamo4RXFCZFZJSHJZM085N1A5CmZhMFM1STcxQWdNQkFBRUNnZ0VBQXJpNEZ4cEI0VXlLL0FuMERUVWtnN1dJaXZrbkJBaytXWUpLak9mNUhmZGgKU0NTQ1ZpaWJPamxNRXZJanFYVnBUT2NKSDhOL3dha2R0Wk9nM0RaRWxqWURidWQ1TE1kREpKSDVzcHJKaUlMdwp6cFJkN2lnb1owNkszaG5IeWErYjZxNnJiQ1ptakJCQUt6VEI3bXN3cWxLNURUNEZsUC9zTFByMWc3dFI2S1BZCldweUZVTnRsZ0hWN3luSWxBV1dIUmhnUkJGaDk0Zzg3dG1IU2JpcW5GSndKTk5rcTVreWFOZU1GL2hGY1pYeGYKMEZJWW91eW9CMXNkTERxeDdIQjRXYzA3VlRlUG9OVnVkV2NxUU5CaWdJNzBlSmZOTlNyRWRFdkl1STVhdUFUNQptQUVQeWtGaU9zaTZoYlFidENWeVBhWVlBWEdxU0FrWHNnWURVKzBjNFFLQmdRQzZzUGFjL2FaRmUyNi9xaDZ0CnUrem4rZGZOZXZmcmFOME5KVkpMM091SC9LRC9Wanh0ZHN2amF4di92YlRJR08rdVJzVkwySWF5bDVJNnBVWDgKdzFFZXZMcmNGOXpzcHNteG5jaUw5ZTdCM0VBYXhWVE5ZUEtUYVMvT1IrbGxGYkQ0dThMK01qS0JRcUFJU056RApqbXRIeVZyNlI1NzF6a0gvYTVObzVtbjZZUUtCZ1FEWXBseTFCMUUyY29RYkZPQ1psRGtSV1J5NzBXS2ZwQlhUCnoydzdvazgrTEFvaGJzdk55eU96bDV1Q2NSZFFqeHRHZVZzVFdCNjcrdzY1Q01xRGtkV2pDN202Ukd0MWxzTC8KZkZHdmhyTnl0dENRRWI5OHNqVFVrcnZpL2svRzltTDRsaGRPVFdLaXg5RnEvclU3R3lzOG91WmxzQkd0K1BQbQplRkdoTitNbEZRS0JnUUNHQkY4a2w1bHlxNGIzSStKZUNWZXB0MXJKY1Fyai9TVWlPTFo1S3lBUlFMTTZXT2VNCkZRbU1PZW1oanNkbUZUQ0p4TmdBK0hESlo3RmJWQ1dIcTVaaUlFMXJqZDNVTEc4QmlDamRBRERqRFg4Zk9LVUYKd2lDZzNaT3AyMG1hZlJYTG1NNER1SGswL1dUd1RZM2MvREhiR0pxc3JCbGFqelFsYlU0bXNiRkdRUUtCZ1FDSwpzWDNaK2xRNFdmbE9hUUFiOFhMVE0wd2N4TCt4V1ZjTDROYjJHa05HbHVUcFlFZWllREJqMFdPaGp3cVE3UHhXCkVteUdwcndPTlh2SVl1TmFkU3JpRlNpU0lTajEvMHpZUjlyM1ZuRmN0OEl1Nk4zQVUwbFU2SmJWaTE3QkRZeHcKZlkxditFUnoxeDJ1dEY2Szl5cW54OVZkTmVrcmladUNhSFpCa2tpY3ZRS0JnRENQNmdLdExuSmpKR3V1ZVdYYQprUjZ6WG1XOGkyRHhlMGRMcGNHMVVkaHpIMFZpWGJsMU0yV0JTZGladmVVMzBVb2RzTThWT1VQSFJpUTYwaXVYCmdTeHoyNDJ1a3lCVkdjOEVWNFUzR0lHM3d1dXRYNlhyTHBBd29jVFAvNi9wV1UyNEtYeWZhWll6Q0hjejF0VWEKbTFONnRBejNRUDlwR2ROSFh3dzBGV0oyCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: basic-auth-secret
+type: Opaque
+data:
+  auth: Zm9vOiRhcHIxJFBmd0xLelkvJHR6Mkc0OWtBMXYuS1ZOUFZwMWlNVS8K
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-auth
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth-secret
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - foo'
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - test.local
+      secretName: tls-secret
+  rules:
+    - host: test.local
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: service-1
+              port:
+                number: 80
