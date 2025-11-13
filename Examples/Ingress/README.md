@@ -78,7 +78,7 @@ curl --resolve test.local:8082:127.0.0.1 https://test.local:8082 -k
 and
 
 ```ps1
-curl --resolve test.local:8081:127.0.0.1 https://test.local:8081
+curl --resolve test.local:8081:127.0.0.1 http://test.local:8081
 ```
 
 > Note [tls.yaml](./tls.yaml) contains TLS secrets. This is only for demo purpose.
